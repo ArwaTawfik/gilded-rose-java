@@ -68,7 +68,6 @@ class GildedRoseTest {
         GildedRose app = new GildedRose(items);
         app.updateQuality();
         assertEquals(80, app.items[0].quality);
-        assertEquals(80, app.items[0].quality);
     }
 
     @Test
