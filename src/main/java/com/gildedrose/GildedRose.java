@@ -3,10 +3,6 @@ package com.gildedrose;
 class GildedRose {
     Item[] items;
 
-    String SULFURAS = "Sulfuras, Hand of Ragnaros";
-    String BACKSTAGE_PASSES = "Backstage passes to a TAFKAL80ETC concert";
-    String AGED_BRIE = "Aged Brie";
-
     public GildedRose(Item[] items) {
         this.items = items;
     }
@@ -29,43 +25,42 @@ class GildedRose {
         }
     }
 
-    public void decreaseQuality(Item item) {
+    public void decreaseQuality(Item item, int degradationScale) {
         if (item.sellIn <= 0) {
-            updateQualitybyValue(item, -2);
+            updateQualitybyValue(item, -2 * degradationScale);
         } else {
-            updateQualitybyValue(item, -1);
+            updateQualitybyValue(item, -1 * degradationScale);
+        }
+    }
+
+    public void backstagePasses(Item item) {
+        if (item.sellIn <= 0) {
+            updateQualitybyValue(item, -1 * item.quality);
+        } else if (item.sellIn < 6) {
+            updateQualitybyValue(item, 3);
+        } else if (item.sellIn < 11) {
+            updateQualitybyValue(item, 2);
         }
     }
 
     public void updateQuality() {
-
         for (int i = 0; i < items.length; i++) {
-
-            if(items[i].name.equals(SULFURAS)) {
-                continue;
+            switch (items[i].name) {
+                case "Sulfuras, Hand of Ragnaros":
+                    continue;
+                case "Backstage passes to a TAFKAL80ETC concert":
+                    backstagePasses(items[i]);
+                    break;
+                case "Aged Brie":
+                    increaseQuality(items[i]);
+                    break;
+                case "Conjured":
+                    decreaseQuality(items[i], 2);
+                    break;
+                default:
+                    decreaseQuality(items[i], 1);
             }
-
-            items[i].sellIn = items[i].sellIn - 1;
-
-            if (items[i].name.equals(BACKSTAGE_PASSES)) {
-                if (items[i].sellIn < 11) {
-                    updateQualitybyValue(items[i], 2);
-                }
-                if (items[i].sellIn < 6) {
-                    updateQualitybyValue(items[i], 3);
-                }
-                if (items[i].sellIn <= 0) {
-                    updateQualitybyValue(items[i], -1*items[i].quality);
-                }
-                continue;
-            }
-
-            if(items[i].name.equals(AGED_BRIE)) {
-                increaseQuality(items[i]);
-                continue;
-            }
-
-            decreaseQuality(items[i]);
+            items[i].sellIn--;
         }
     }
 }

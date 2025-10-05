@@ -7,11 +7,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class GildedRoseTest {
 
     String agedBrie = "Aged Brie";
-    String sulfuras="Sulfuras, Hand of Ragnaros";
-    String backstagePasses="Backstage passes to a TAFKAL80ETC concert";
+    String sulfuras = "Sulfuras, Hand of Ragnaros";
+    String backstagePasses = "Backstage passes to a TAFKAL80ETC concert";
+    String conjured = "Conjured";
+
     @Test
     void qualityDecreaseDaily() {
-        Item[] items = new Item[] { new Item("Cheese", 4, 10) };
+        Item[] items = new Item[]{new Item("Cheese", 4, 10)};
         GildedRose app = new GildedRose(items);
         app.updateQuality();
         assertEquals(9, app.items[0].quality);
@@ -21,7 +23,7 @@ class GildedRoseTest {
 
     @Test
     void qualityDecreaseTwiceAsFast() {
-        Item[] items = new Item[] { new Item("Cheese", 0, 5) };
+        Item[] items = new Item[]{new Item("Cheese", 0, 5)};
         GildedRose app = new GildedRose(items);
         app.updateQuality();
         assertEquals(3, app.items[0].quality);
@@ -33,7 +35,7 @@ class GildedRoseTest {
 
     @Test
     void qualityNoDecreaseAfterZero() {
-        Item[] items = new Item[] { new Item("Cheese", 4, 1) };
+        Item[] items = new Item[]{new Item("Cheese", 4, 1)};
         GildedRose app = new GildedRose(items);
         app.updateQuality();
         assertEquals(0, app.items[0].quality);
@@ -43,7 +45,7 @@ class GildedRoseTest {
 
     @Test
     void qualityIncreaseIfAgedBrie() {
-        Item[] items = new Item[] { new Item(agedBrie, 1, 5) };
+        Item[] items = new Item[]{new Item(agedBrie, 1, 5)};
         GildedRose app = new GildedRose(items);
         app.updateQuality();
         assertEquals(6, app.items[0].quality);
@@ -52,8 +54,8 @@ class GildedRoseTest {
     }
 
     @Test
-    void qualityLessThanFifty() {
-        Item[] items = new Item[] { new Item(agedBrie, 1, 49) };
+    void qualityNoIncreaseAfterFifty() {
+        Item[] items = new Item[]{new Item(agedBrie, 1, 49)};
         GildedRose app = new GildedRose(items);
         app.updateQuality();
         assertEquals(50, app.items[0].quality);
@@ -62,16 +64,17 @@ class GildedRoseTest {
     }
 
     @Test
-    void qualityRemainsIfSulfuras() {
-        Item[] items = new Item[] { new Item(sulfuras, 5, 80) ,
-                new Item(sulfuras, 0, 80) };
+    void qualityAndSellInRemainsIfSulfuras() {
+        Item[] items = new Item[]{new Item(sulfuras, 5, 80),
+                new Item(sulfuras, 0, 80)};
         GildedRose app = new GildedRose(items);
         app.updateQuality();
         assertEquals(80, app.items[0].quality);
+        assertEquals(5, app.items[0].sellIn);
     }
 
     @Test
-    void qualityIncreaseIfBackstagePassess() {
+    void qualityIncreaseIfBackstagePasses() {
         Item[] items = new Item[]{new Item(backstagePasses, 6, 30)};
         GildedRose app = new GildedRose(items);
         app.updateQuality();
@@ -82,8 +85,18 @@ class GildedRoseTest {
 
     @Test
     void qualityDropsToZeroIfBackstagePassesAndLastDay() {
-        Item[] items = new Item[]{ new Item(backstagePasses, 0, 30) };
+        Item[] items = new Item[]{new Item(backstagePasses, 0, 30)};
         GildedRose app = new GildedRose(items);
+        app.updateQuality();
+        assertEquals(0, app.items[0].quality);
+    }
+
+    @Test
+    void qualityDecreaseTwiceAsFastIfConjured() {
+        Item[] items = new Item[]{new Item(conjured, 1, 5)};
+        GildedRose app = new GildedRose(items);
+        app.updateQuality();
+        assertEquals(3, app.items[0].quality);
         app.updateQuality();
         assertEquals(0, app.items[0].quality);
     }
